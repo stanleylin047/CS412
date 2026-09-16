@@ -1,0 +1,24 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Quotes</title>
+    <link rel="stylesheet" href="{% static 'style.css' %}">
+</head>
+<body>
+    <header>
+        <h1>My Quotes</h1>
+    </header>
+    <nav>
+    <a href="{% url 'quotes:quote' %}">Random quote</a>
+    <a href="{% url 'quotes:show_all' %}">All quotes</a>
+    <a href="{% url 'quotes:about' %}">About</a>
+    </nav>
+    <main>
+        {% block content %}
+        {% endblock %}
+    </main>
+</body>
+</html>

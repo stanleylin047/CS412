@@ -1,0 +1,38 @@
+body {
+    background-color: lightyellow;
+    font-family: Arial, sans-serif;
+    color: darkblue;
+    margin: 30px;
+}
+
+h1 {
+    text-align: center;
+}
+
+nav {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+a {
+    color: brown;
+    margin: 10px;
+}
+
+blockquote {
+    background-color: white;
+    padding: 20px;
+    font-size: 24px;
+}
+
+img {
+    width: 500px;
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 0 auto;
+}
+
+li {
+    margin-bottom: 15px;
+}
