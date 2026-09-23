@@ -1,0 +1,49 @@
+{% extends "restaurant/base.html" %}
+
+{% block content %}
+<h2>Order Confirmation</h2>
+<p>Thank you for your order! Your delicious ramen will be ready shortly.</p>
+<p>Below are the details of your order:</p>
+<br>
+
+<p> Estimated Wait Time: {{ estimated_wait_time|date:"g:i A" }}</p>
+<p> Name: {{ name }}</p>
+<p> Phone: {{ phone }}</p>
+<p> Email: {{ email }}</p>
+<p> Total: ${{ total|floatformat:2 }}</p>
+
+{% if address %}
+    <p> Address: {{ address }}</p>
+{% endif %}
+<br>
+
+{% if tonkotsu %}
+    <p>Tonkotsu Ramen</p>
+    <p>Size: {{ tonkotsu_size }}</p>
+    <ul>
+        {% for extra in tonkotsu_extras %}
+        <li>Extra: {{ extra }}</li>
+        {% endfor %}
+    </ul>
+{% endif %}
+<br>
+
+{% if miso %}
+    <p>Miso Ramen</p>
+{% endif %}
+<br>
+
+{% if soyu %}
+    <p>Soyu Ramen</p>
+{% endif %}
+<br>
+
+{% if daily_special %}
+    <p>Daily Special: {{ daily_special }}</p>
+{% endif %}
+<br>
+
+{% if special_instructions %}
+    <p>Special Instructions: {{ special_instructions }}</p>
+{% endif %}
+{% endblock %}

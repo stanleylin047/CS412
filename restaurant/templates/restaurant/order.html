@@ -1,0 +1,86 @@
+{% extends "restaurant/base.html" %}
+
+{% block content %}
+<h2>Order Page</h2>
+<h5>Welcome to our order page! Please select from our delicious menu items.</h5>
+<form method="post" action="{% url 'restaurant:confirmation' %}">
+    {% csrf_token %}
+    <label>
+        <input type="checkbox" id="tonkotsuRamen" name="tonkotsuRamen" value="Tonkotsu Ramen">
+        Tonkotsu Ramen $13.99
+    </label>
+    
+    <div id="tonkotsuOptions" hidden>
+        <p> Choose one size:</p>
+
+        <label>
+            <input type="radio" name="tonkotsuSize" value="small">
+            Small
+        </label>
+
+        <label>
+            <input type="radio" name="tonkotsuSize" value="medium">
+            Medium
+        </label>
+        <label>
+            <input type="radio" name="tonkotsuSize" value="large">
+            Large
+        </label>
+        <br>
+        <p> Choose your extras:</p>
+        <label>
+            <input type="checkbox" name="tonkotsuExtras" value="eggs">
+            Eggs
+        </label>
+        <label>
+            <input type="checkbox" name="tonkotsuExtras" value="corn">
+            Corn
+        </label>
+
+        <label>
+            <input type="checkbox" name="tonkotsuExtras" value="noodle">
+            Noodles
+        </label>
+    </div>
+    <br><br>
+
+    <label>
+        <input type="checkbox" name="misoRamen" value="Miso Ramen">
+        Miso Ramen $11.99
+    </label>
+    <br><br>
+
+    <label>
+        <input type="checkbox" name="soyuRamen" value="Soyu Ramen">
+        Soyu Ramen $12.99
+    </label>
+    <br><br>
+
+    <label>
+        <input type="checkbox" name="daily_special" value="{{daily_special}}">
+        Today's Daily Special: {{ daily_special }} $5.99
+    </label>
+    <br><br>
+
+    <label>
+        <p>Special Instructions:</p>
+        <textarea name="special_instructions" rows="4" cols="50"
+            placeholder="Enter any special instructions here..."></textarea>
+    </label>
+    <br>
+    <label>Name: <input type="text" name="name"></label><br>
+    <label>Phone: <input type="text" name="phone"></label><br>
+    <label>Email: <input type="text" name="email"></label><br>
+    <label>Address: <input type="text" name="address"></label><br>
+    <button type="submit">Place order</button>
+</form>
+
+<script>
+    const itemCheckbox = document.getElementById("tonkotsuRamen");
+    const optionsBox = document.getElementById("tonkotsuOptions");
+
+    itemCheckbox.addEventListener("change", function () {
+        optionsBox.hidden = !itemCheckbox.checked;
+    });
+</script>
+{% endblock %}
