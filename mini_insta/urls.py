@@ -1,4 +1,4 @@
-# Name: Stanley
+# Name: Stanley Lin
 # Email: stanley0@bu.edu
 # File: urls.py
 # Description: This file defines the URL patterns for the mini_insta application.
