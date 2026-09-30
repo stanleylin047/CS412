@@ -1,0 +1,40 @@
+/*
+Name: Stanley
+Email: stanley0@bu.edu
+Description: Shared styles for Mini Insta pages.
+*/
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    background-color: #fafafa;
+    color: #262626;
+}
+
+header {
+    background-color: white;
+    border-bottom: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+}
+
+header h1 {
+    margin: 0 0 12px;
+}
+
+a {
+    color: #0077b6;
+}
+
+main {
+    max-width: 1000px;
+    margin: 30px auto;
+    padding: 0 20px;
+}
+
+footer {
+    border-top: 1px solid #ddd;
+    padding: 20px;
+    text-align: center;
+    color: #666;
+}

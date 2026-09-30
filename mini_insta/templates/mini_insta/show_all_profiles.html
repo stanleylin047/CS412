@@ -1,0 +1,23 @@
+<!-- mini_insta/show_all.html -->
+
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<h1>Showing all profiles</h1>
+
+<!-- This displays the QuerySet of all profiles -->
+<!-- {{profiles}} -->
+
+<div>
+    {% for profile in profiles %}
+    <div>
+        <h2>Username: @{{profile.username}}</h2>
+        <h2>Name: {{profile.display_name}}</h2>
+        <a href="{% url 'mini_insta:show_profile' profile.pk %}">
+            <img src = "{{profile.profile_image_url}}" width="200">
+        </a>
+    </div>
+    <hr>
+    {% endfor %}
+</div>
+{% endblock %}

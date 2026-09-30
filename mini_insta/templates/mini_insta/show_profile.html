@@ -1,0 +1,18 @@
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<main>
+    <h1>{{ profile.display_name }}</h1>
+    <p>@{{ profile.username }}</p>
+
+    <img
+        src="{{ profile.profile_image_url }}"
+        style="width: 300px; height: 300px; object-fit: cover;"
+    >
+
+    <h2>About Me</h2>
+    {{ profile.bio_text|linebreaks }}
+
+    <p>Joined: {{ profile.join_date|date:"Y-m-d" }}</p>
+</main>
+{% endblock %}
