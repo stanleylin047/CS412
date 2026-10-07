@@ -1,0 +1,19 @@
+<!--
+Name: Stanley Lin
+BU Email: stanley0@bu.edu
+Description: Display a placeholder for posts without photos.
+-->
+<svg xmlns="http://www.w3.org/2000/svg"
+     width="400"
+     height="300"
+     viewBox="0 0 400 300">
+    <rect width="400" height="300" fill="#eeeeee"/>
+    <text x="200"
+          y="150"
+          text-anchor="middle"
+          font-family="Arial"
+          font-size="24"
+          fill="#666666">
+        No image
+    </text>
+</svg>
