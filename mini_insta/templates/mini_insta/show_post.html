@@ -1,0 +1,37 @@
+<!--
+Name: Stanley Lin
+BU Email: stanley0@bu.edu
+Description: Display one post, its timestamp, and all associated photos.
+-->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<div>
+    <h1>Post by {{ post.profile.display_name }}</h1>
+
+    <p>@{{ post.profile.username }}</p>
+
+    {{ post.caption|linebreaks }}
+
+    <p>Posted: {{ post.timestamp|date:"Y-m-d H:i" }}</p>
+
+    <h2>Photos</h2>
+
+    {% for photo in post.get_all_photos %}
+        <div>
+            <img
+                src="{{ photo.image_url }}"
+                style="max-width: 100%; height: auto;"
+            >
+        </div>
+    {% empty %}
+        <p>No photos for this post.</p>
+    {% endfor %}
+
+    <p>
+        <a href="{% url 'mini_insta:show_profile' post.profile.pk %}">
+            Back to profile
+        </a>
+    </p>
+</div>
+{% endblock %}

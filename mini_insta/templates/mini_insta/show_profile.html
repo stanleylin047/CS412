@@ -4,9 +4,10 @@ BU Email: stanley0@bu.edu
 Description: Display one profile's image, biography, and account details.
 -->
 {% extends "mini_insta/base.html" %}
+{% load static %}
 
 {% block content %}
-<main>
+<div>
     <h1>{{ profile.display_name }}</h1>
     <p>@{{ profile.username }}</p>
 
@@ -19,5 +20,33 @@ Description: Display one profile's image, biography, and account details.
     {{ profile.bio_text|linebreaks }}
 
     <p>Joined: {{ profile.join_date|date:"Y-m-d" }}</p>
-</main>
+
+    <h2>Posts</h2>
+    {% for post in profile.get_all_posts %}
+        <article>
+            <a href="{% url 'mini_insta:show_post' post.pk %}">
+                {% with photo=post.get_all_photos.first %}
+                    {% if photo %}
+                        <img
+                            src="{{ photo.image_url }}"
+                            style="width: 300px; height: 300px; object-fit: cover;"
+                        >
+                    {% else %}
+                        <img
+                            src="{% static 'mini_insta/no_image.svg' %}"
+                            style="width: 300px; height: 300px; object-fit: cover;"
+                        >
+                    {% endif %}
+                {% endwith %}
+
+                <p>{{ post.caption|default:"View post" }}</p>
+            </a>
+
+            <p>{{ post.timestamp }}</p>
+        </article>
+    {% empty %}
+        <p>No posts yet.</p>
+    {% endfor %}
+
+</div>
 {% endblock %}
