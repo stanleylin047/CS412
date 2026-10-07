@@ -19,10 +19,15 @@ Description: Display one post, its timestamp, and all associated photos.
 
     {% for photo in post.get_all_photos %}
         <div>
-            <img
-                src="{{ photo.image_url }}"
-                style="max-width: 100%; height: auto;"
-            >
+            {% if photo.get_image_url %}
+                <img
+                    src="{{ photo.get_image_url }}"
+                    alt="Photo {{ forloop.counter }} for this post"
+                    style="max-width: 100%; height: auto;"
+                >
+            {% else %}
+                <p>No image for this photo.</p>
+            {% endif %}
         </div>
     {% empty %}
         <p>No photos for this post.</p>

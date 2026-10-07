@@ -3,6 +3,11 @@ Name: Stanley Lin
 BU Email: stanley0@bu.edu
 Description: Collect a caption and image URL to create a post.
 -->
+<!--
+Name: Stanley Lin
+BU Email: stanley0@bu.edu
+Description: Collect a caption and multiple uploaded images for a new post.
+-->
 {% extends "mini_insta/base.html" %}
 
 {% block content %}
@@ -11,18 +16,20 @@ Description: Collect a caption and image URL to create a post.
 <form
     method="POST"
     action="{% url 'mini_insta:create_post' profile.pk %}"
+    enctype="multipart/form-data"
 >
     {% csrf_token %}
 
     {{ form.as_p }}
 
     <p>
-        <label for="id_image_url">Image URL:</label>
+        <label for="id_files">Photos:</label>
         <input
-            type="url"
-            name="image_url"
-            id="id_image_url"
-            required
+            type="file"
+            name="files"
+            id="id_files"
+            accept="image/*"
+            multiple
         >
     </p>
 

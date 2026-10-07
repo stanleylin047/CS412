@@ -26,14 +26,16 @@ Description: Display one profile's image, biography, and account details.
         <article>
             <a href="{% url 'mini_insta:show_post' post.pk %}">
                 {% with photo=post.get_all_photos.first %}
-                    {% if photo %}
+                    {% if photo.get_image_url %}
                         <img
-                            src="{{ photo.image_url }}"
+                            src="{{ photo.get_image_url }}"
+                            alt="Photo for {{ post.caption }}"
                             style="width: 300px; height: 300px; object-fit: cover;"
                         >
                     {% else %}
                         <img
                             src="{% static 'mini_insta/no_image.svg' %}"
+                            alt="No image"
                             style="width: 300px; height: 300px; object-fit: cover;"
                         >
                     {% endif %}

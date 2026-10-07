@@ -54,15 +54,25 @@ class CreatePostView(CreateView):
         self is the current view instance.
         form is the validated CreatePostForm submitted by the user.
         """
+
         profile = get_object_or_404(Profile, pk=self.kwargs['pk'])
         form.instance.profile = profile
 
         response = super().form_valid(form)
 
-        image_url = self.request.POST['image_url']
-        Photo.objects.create(
-            post=self.object,
-            image_url=image_url,
-        )
+        #Created one photo with an external image URL.
+        #image_url = self.request.POST['image_url']
+        #Photo.objects.create(
+        #    post=self.object,
+        #    image_url=image_url,
+        #)
+
+        files = self.request.FILES.getlist('files')
+
+        for image_file in files:
+            Photo.objects.create(
+                post=self.object,
+                image_file=image_file,
+            )
 
         return response

@@ -46,9 +46,30 @@ class Photo(models.Model):
     """Represent a photo associated with a post."""
 
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
-    image_url = models.URLField()
+    image_url = models.URLField(blank=True)
+    image_file = models.ImageField(upload_to = 'mini_insta/', blank = True,)
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    def get_image_url(self):
+        """
+        Return the external or uploaded image URL.
+
+        self is the current Photo instance.
+        """
+        if self.image_url:
+            return self.image_url
+
+        if self.image_file:
+            return self.image_file.url
+
+        return ''
+    
     def __str__(self):
         """Describe the photo; self is the current Photo instance."""
-        return f'Post {self.post_id}: {self.image_url}'
+        if self.image_url:
+            return f'Post {self.post_id}: {self.image_url}'
+
+        if self.image_file:
+            return f'Post {self.post_id}: [self.image_file]'
+
+        return f'Post {self.post_id}: No image'
