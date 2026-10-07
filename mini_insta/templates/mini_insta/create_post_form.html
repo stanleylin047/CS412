@@ -1,0 +1,35 @@
+<!--
+Name: Stanley Lin
+BU Email: stanley0@bu.edu
+Description: Collect a caption and image URL to create a post.
+-->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<h1>Create a Post for {{ profile.display_name }}</h1>
+
+<form
+    method="POST"
+    action="{% url 'mini_insta:create_post' profile.pk %}"
+>
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <p>
+        <label for="id_image_url">Image URL:</label>
+        <input
+            type="url"
+            name="image_url"
+            id="id_image_url"
+            required
+        >
+    </p>
+
+    <button type="submit">Create Post</button>
+
+    <a href="{% url 'mini_insta:show_profile' profile.pk %}">
+        Cancel
+    </a>
+</form>
+{% endblock %}

@@ -28,6 +28,12 @@ Description: Shared layout for Mini Insta pages.
     <footer>
         <p>Mini Insta · CS412</p>
         <a href="{% url 'mini_insta:show_all_profiles' %}">Back to all profiles</a>
+        
+        {% if profile %}
+            <a href="{% url 'mini_insta:create_post' profile.pk %}">
+                Create Post
+            </a>
+        {% endif %}
     </footer>
 </body>
 </html>

@@ -2,6 +2,7 @@
 # BU Email: stanley0@bu.edu
 # Description: This file set the data and data type we need.
 from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 class Profile(models.Model):
@@ -36,6 +37,10 @@ class Post(models.Model):
     def get_all_photos(self):
         """Return this post's photos; self is the current Post instance."""
         return Photo.objects.filter(post=self).order_by('timestamp', 'pk')
+
+    def get_absolute_url(self):
+        """Return this post's detail URL; self is the current Post instance."""
+        return reverse('mini_insta:show_post', kwargs={'pk': self.pk})
 
 class Photo(models.Model):
     """Represent a photo associated with a post."""
