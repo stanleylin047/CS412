@@ -1,0 +1,30 @@
+<!--
+Name: Stanley Lin
+BU Email: stanley0@bu.edu
+Description: Display the profiles followed by the selected profile.
+-->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<h1>{{ profile.display_name }} is following</h1>
+
+{% for followed_profile in profile.get_following %}
+    <article>
+        <a href="{% url 'mini_insta:show_profile' followed_profile.pk %}">
+            <img
+                src="{{ followed_profile.profile_image_url }}"
+                alt="{{ followed_profile.display_name }}"
+                style="width: 80px; height: 80px; object-fit: cover;"
+            >
+            {{ followed_profile.display_name }}
+            (@{{ followed_profile.username }})
+        </a>
+    </article>
+{% empty %}
+    <p>Not following anyone yet.</p>
+{% endfor %}
+
+<a href="{% url 'mini_insta:show_profile' profile.pk %}">
+    Back to profile
+</a>
+{% endblock %}

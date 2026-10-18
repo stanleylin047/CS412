@@ -1,0 +1,22 @@
+<!--
+Name: Stanley Lin
+BU Email: stanley0@bu.edu
+Description: Display a form to edit an existing post caption.
+-->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<h1>Update Post</h1>
+
+<form method="POST">
+    {% csrf_token %}
+
+    {{ form.as_p }}
+
+    <button type="submit">Save Changes</button>
+</form>
+
+<a href="{% url 'mini_insta:show_post' post.pk %}">
+    Cancel
+</a>
+{% endblock %}

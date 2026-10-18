@@ -1,0 +1,66 @@
+<!--
+Name: Stanley Lin
+BU Email: stanley0@bu.edu
+Description: Display posts from profiles followed by the selected profile.
+-->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<h1>{{ profile.display_name }}'s Feed</h1>
+
+<p>
+    <a href="{% url 'mini_insta:show_profile' profile.pk %}">
+        Back to my profile
+    </a>
+</p>
+
+{% for post in profile.get_post_feed %}
+    <article>
+        <a href="{% url 'mini_insta:show_profile' post.profile.pk %}">
+            <img
+                src="{{ post.profile.profile_image_url }}"
+                alt="{{ post.profile.display_name }}"
+                style="width: 60px; height: 60px; object-fit: cover;"
+            >
+            {{ post.profile.display_name }}
+        </a>
+
+        <p>{{ post.timestamp|date:"Y-m-d H:i" }}</p>
+
+        {% with photo=post.get_all_photos.first %}
+            {% if photo %}
+                <a href="{% url 'mini_insta:show_post' post.pk %}">
+                    <img
+                        src="{{ photo.get_image_url }}"
+                        alt="Photo from {{ post.profile.display_name }}'s post"
+                        style="max-width: 400px; width: 100%; height: auto;"
+                    >
+                </a>
+            {% else %}
+                <p>No photo for this post.</p>
+            {% endif %}
+        {% endwith %}
+
+        <p>{{ post.get_likes.count }} likes</p>
+
+        {{ post.caption|linebreaks }}
+
+        <h3>Comments</h3>
+
+        {% for comment in post.get_all_comments %}
+            <p>
+                <strong>{{ comment.profile.display_name }}:</strong>
+                {{ comment.text }}
+            </p>
+        {% empty %}
+            <p>No comments yet.</p>
+        {% endfor %}
+
+        <a href="{% url 'mini_insta:show_post' post.pk %}">
+            View post
+        </a>
+    </article>
+{% empty %}
+    <p>No posts to show from the profiles you follow.</p>
+{% endfor %}
+{% endblock %}

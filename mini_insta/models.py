@@ -22,6 +22,36 @@ class Profile(models.Model):
         """Return this profile's posts; self is the current Profile instance."""
         return Post.objects.filter(profile=self).order_by('-timestamp')
 
+    def get_absolute_url(self):
+        '''return the detail URL for self'''
+        return reverse('mini_insta:show_profile', kwargs = {'pk': self.pk},)
+
+    def get_followers(self):
+        """Return profiles following self, the current Profile instance."""
+        follows = Follow.objects.filter(profile=self)
+        return [follow.follower_profile for follow in follows]
+
+    def get_num_followers(self):
+        """Return the follower count for self, the current Profile instance."""
+        return Follow.objects.filter(profile=self).count()
+
+    def get_following(self):
+        """Return profiles followed by self, the current Profile instance."""
+        follows = Follow.objects.filter(follower_profile=self)
+        return [follow.profile for follow in follows]
+
+    def get_num_following(self):
+        """Return the following count for self, the current Profile instance."""
+        return Follow.objects.filter(follower_profile=self).count()
+
+    def get_post_feed(self):
+        """Return posts by profiles followed by self, newest first."""
+        following = self.get_following()
+
+        return Post.objects.filter(
+            profile__in=following,
+        ).order_by('-timestamp', '-pk')
+
 
 class Post(models.Model):
     """Represent a post created by a profile"""
@@ -41,6 +71,15 @@ class Post(models.Model):
     def get_absolute_url(self):
         """Return this post's detail URL; self is the current Post instance."""
         return reverse('mini_insta:show_post', kwargs={'pk': self.pk})
+
+    def get_all_comments(self):
+        '''Return comments on self'''
+        return Comment.objects.filter(post=self).order_by('timestamp', 'pk')
+
+    def get_likes(self):
+        '''Return likes on self'''
+        return Like.objects.filter(post=self)
+    
 
 class Photo(models.Model):
     """Represent a photo associated with a post."""
@@ -73,3 +112,52 @@ class Photo(models.Model):
             return f'Post {self.post_id}: [self.image_file]'
 
         return f'Post {self.post_id}: No image'
+
+class Follow(models.Model):
+    """Represent one profile following another profile."""
+
+    profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='profile',
+    )
+    follower_profile = models.ForeignKey(
+        Profile,
+        on_delete=models.CASCADE,
+        related_name='follower_profile',
+    )
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Describe self, the current Follow relationship."""
+        return (
+            f'{self.follower_profile.username} follows '
+            f'{self.profile.username}'
+        )
+
+class Comment(models.Model):
+    """Represent a profile's comment on a post."""
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+    text = models.TextField()
+
+    def __str__(self):
+        """Describe self, the current Comment instance."""
+        return (
+            f'{self.profile.username} on post {self.post_id}: '
+            f'{self.text[:50]}'
+        )
+
+
+class Like(models.Model):
+    """Represent a profile's approval of a post."""
+
+    post = models.ForeignKey(Post, on_delete=models.CASCADE)
+    profile = models.ForeignKey(Profile, on_delete=models.CASCADE)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        """Describe self, the current Like instance."""
+        return f'{self.profile.username} likes post {self.post_id}'

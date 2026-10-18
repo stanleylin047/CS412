@@ -1,0 +1,29 @@
+<!--
+Name: Stanley Lin
+BU Email: stanley0@bu.edu
+Description: Display the profiles following the selected profile.
+-->
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<h1>Followers of {{ profile.display_name }}</h1>
+
+{% for follower in profile.get_followers %}
+    <article>
+        <a href="{% url 'mini_insta:show_profile' follower.pk %}">
+            <img
+                src="{{ follower.profile_image_url }}"
+                alt="{{ follower.display_name }}"
+                style="width: 80px; height: 80px; object-fit: cover;"
+            >
+            {{ follower.display_name }} (@{{ follower.username }})
+        </a>
+    </article>
+{% empty %}
+    <p>No followers yet.</p>
+{% endfor %}
+
+<a href="{% url 'mini_insta:show_profile' profile.pk %}">
+    Back to profile
+</a>
+{% endblock %}

@@ -11,26 +11,52 @@ Description: Display one post, its timestamp, and all associated photos.
 
     <p>@{{ post.profile.username }}</p>
 
-    {{ post.caption|linebreaks }}
-
     <p>Posted: {{ post.timestamp|date:"Y-m-d H:i" }}</p>
+    <p>
+        <a href="{% url 'mini_insta:update_post' post.pk %}">
+            Update Post
+        </a>
+    </p>
+
+    <p>
+        <a href="{% url 'mini_insta:delete_post' post.pk %}">
+            Delete Post
+        </a>
+    </p>
 
     <h2>Photos</h2>
 
     {% for photo in post.get_all_photos %}
-        <div>
-            {% if photo.get_image_url %}
-                <img
-                    src="{{ photo.get_image_url }}"
-                    alt="Photo {{ forloop.counter }} for this post"
-                    style="max-width: 100%; height: auto;"
-                >
-            {% else %}
-                <p>No image for this photo.</p>
-            {% endif %}
-        </div>
+    <div>
+        {% if photo.get_image_url %}
+        <img src="{{ photo.get_image_url }}" alt="Photo {{ forloop.counter }} for this post"
+            style="max-width: 100%; height: auto;">
+        {% else %}
+        <p>No image for this photo.</p>
+        {% endif %}
+    </div>
     {% empty %}
-        <p>No photos for this post.</p>
+    <p>No photos for this post.</p>
+    {% endfor %}
+
+    <p>{{ post.get_likes.count }} likes</p>
+
+    {{ post.caption|linebreaks }}
+
+    <h2>Comments</h2>
+
+    {% for comment in post.get_all_comments %}
+    <article>
+        <a href="{% url 'mini_insta:show_profile' comment.profile.pk %}">
+            {{ comment.profile.display_name }}
+        </a>
+
+        {{ comment.text|linebreaks }}
+
+        <small>{{ comment.timestamp|date:"Y-m-d H:i" }}</small>
+    </article>
+    {% empty %}
+    <p>No comments yet.</p>
     {% endfor %}
 
     <p>

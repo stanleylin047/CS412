@@ -20,6 +20,21 @@ Description: Display one profile's image, biography, and account details.
     {{ profile.bio_text|linebreaks }}
 
     <p>Joined: {{ profile.join_date|date:"Y-m-d" }}</p>
+    <p>
+    <a href="{% url 'mini_insta:update_profile' profile.pk %}">
+        Update Profile
+    </a>
+    </p>
+
+    <p>
+    <a href="{% url 'mini_insta:show_followers' profile.pk %}">
+        {{ profile.get_num_followers }} Followers
+    </a>
+
+    <a href="{% url 'mini_insta:show_following' profile.pk %}">
+        {{ profile.get_num_following }} Following
+    </a>
+    </p>
 
     <h2>Posts</h2>
     {% for post in profile.get_all_posts %}

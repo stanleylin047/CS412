@@ -2,9 +2,10 @@
 # BU Email: stanley0@bu.edu
 # Description: Display the profile list and individual profile pages.
 from django.shortcuts import render, get_object_or_404
-from django.views.generic import ListView, DetailView, CreateView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from .models import Profile, Post, Photo
-from .forms import CreatePostForm
+from .forms import CreatePostForm, UpdatePostForm, UpdateProfileForm
+from django.urls import reverse
 
 # Create your views here.
 class ProfileListView(ListView):
@@ -76,3 +77,66 @@ class CreatePostView(CreateView):
             )
 
         return response
+
+class UpdateProfileView(UpdateView):
+    """Display and process edits to an existing profile."""
+    model = Profile
+    form_class = UpdateProfileForm
+    template_name = 'mini_insta/update_profile_form.html'
+    context_object_name = 'profile'
+
+class UpdatePostView(UpdateView):
+    '''Display and process edits to an existing post caption.'''
+    model = Post
+    form_class = UpdatePostForm
+    template_name = 'mini_insta/update_post_form.html'
+    context_object_name = 'post'
+
+class DeletePostView(DeleteView):
+    '''Delete an existing post.'''
+
+    model = Post
+    template_name = 'mini_insta/delete_post_form.html'
+    context_object_name = 'post'
+
+    def get_context_data(self, **kwargs):
+        """
+        Add the post author's profile to the template context.
+
+        self is the current view instance.
+        kwargs contains context values supplied by the parent view.
+        """
+
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.object.profile
+        return context
+
+    def get_success_url(self):
+        """
+        Return the author's profile URL after deletion.
+
+        self is the current view instance.
+        """
+        return reverse('mini_insta:show_profile', kwargs={'pk': self.object.profile_id})
+
+class ShowFollowersDetailView(DetailView):
+    """Display the followers of a selected profile."""
+
+    model = Profile
+    template_name = 'mini_insta/show_followers.html'
+    context_object_name = 'profile'
+
+
+class ShowFollowingDetailView(DetailView):
+    """Display the profiles followed by a selected profile."""
+
+    model = Profile
+    template_name = 'mini_insta/show_following.html'
+    context_object_name = 'profile'
+
+class ShowFeedView(DetailView):
+    """Display posts from profiles followed by the selected profile."""
+
+    model = Profile
+    template_name = 'mini_insta/show_feed.html'
+    context_object_name = 'profile'
