@@ -1,0 +1,13 @@
+{% extends "mini_insta/base.html" %}
+
+{% block content %}
+<h1>Search Mini Insta</h1>
+<form method="GET" action="{% url 'mini_insta:search' profile.pk %}">
+    <p>
+        <label for="id_query">Search profiles and post captions:</label>
+        <textarea name="query" id="id_query" rows="3" required>{{ query }}</textarea>
+    </p>
+    <button type="submit">Search</button>
+</form>
+<p><a href="{% url 'mini_insta:show_profile' profile.pk %}">Back to my profile</a></p>
+{% endblock %}

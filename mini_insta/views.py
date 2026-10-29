@@ -6,6 +6,7 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from .models import Profile, Post, Photo
 from .forms import CreatePostForm, UpdatePostForm, UpdateProfileForm
 from django.urls import reverse
+from django.db.models import Q
 
 # Create your views here.
 class ProfileListView(ListView):
@@ -140,3 +141,36 @@ class ShowFeedView(DetailView):
     model = Profile
     template_name = 'mini_insta/show_feed.html'
     context_object_name = 'profile'
+
+
+class SearchView(ListView):
+    """Search post captions and profiles on behalf of a selected profile."""
+
+    template_name = 'mini_insta/search_results.html'
+    context_object_name = 'posts'
+
+    def dispatch(self, request, *args, **kwargs):
+        """Show the search form until a query is submitted."""
+        self.profile = get_object_or_404(Profile, pk=kwargs['pk'])
+        if 'query' not in request.GET:
+            return render(request, 'mini_insta/search.html', {'profile': self.profile})
+        self.query = request.GET.get('query', '').strip()
+        return super().dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        """Return matching captions, with the most recent posts first."""
+        if not self.query:
+            return Post.objects.none()
+        return Post.objects.filter(caption__icontains=self.query).order_by('-timestamp', '-pk')
+
+    def get_context_data(self, **kwargs):
+        """Include the searching profile, query, and matching profiles."""
+        context = super().get_context_data(**kwargs)
+        context['profile'] = self.profile
+        context['query'] = self.query
+        context['profiles'] = Profile.objects.filter(
+            Q(username__icontains=self.query)
+            | Q(display_name__icontains=self.query)
+            | Q(bio_text__icontains=self.query)
+        ).order_by('username', 'pk') if self.query else Profile.objects.none()
+        return context

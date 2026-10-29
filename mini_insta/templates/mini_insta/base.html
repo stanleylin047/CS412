@@ -29,6 +29,7 @@ Description: Shared layout for Mini Insta pages.
     <p>Mini Insta · CS412</p>
 
     {% if profile %}
+        <a href="{% url 'mini_insta:search' profile.pk %}">Search</a>
         <a href="{% url 'mini_insta:show_feed' profile.pk %}">
             Home / Feed
         </a>
@@ -41,6 +42,7 @@ Description: Shared layout for Mini Insta pages.
             Profile
         </a>
     {% elif post %}
+        <a href="{% url 'mini_insta:search' post.profile.pk %}">Search</a>
         <a href="{% url 'mini_insta:show_feed' post.profile.pk %}">
             Home / Feed
         </a>
