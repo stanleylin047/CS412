@@ -1,0 +1,12 @@
+<!-- Name: Stanley Lin | BU Email: stanley0@bu.edu
+Description: Display three Plotly graphs for the entire filtered voter queryset. -->
+{% extends 'voter_analytics/base.html' %}
+{% block content %}
+{% include 'voter_analytics/filter_form.html' %}
+<h2>Voter statistics</h2>
+<p>{{ result_count }} matching record{{ result_count|pluralize }} included in these graphs.</p>
+{% if not result_count %}<p>No voters match these filters. Adjust or clear your filters.</p>{% endif %}
+<section class="panel chart" aria-label="Birth year distribution">{{ birth_graph|safe }}</section>
+<section class="panel chart" aria-label="Party distribution">{{ party_graph|safe }}</section>
+<section class="panel chart" aria-label="Election participation">{{ election_graph|safe }}</section>
+{% endblock %}

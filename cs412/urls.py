@@ -1,3 +1,6 @@
+# Name: Stanley Lin
+# BU Email: stanley0@bu.edu
+# Description: Route requests to each application, including voter analytics.
 """
 URL configuration for cs412 project.
 
@@ -24,6 +27,7 @@ urlpatterns = [
     path('/', include('quotes.urls')),
     path('restaurant/', include('restaurant.urls')),
     path('mini_insta/', include('mini_insta.urls')),
+    path('voter_analytics/', include('voter_analytics.urls')),
 ]
 
 urlpatterns += static(

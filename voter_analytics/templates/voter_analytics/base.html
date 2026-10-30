@@ -1,0 +1,26 @@
+<!-- Name: Stanley Lin | BU Email: stanley0@bu.edu
+Description: Shared layout and navigation for voter analytics. -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Voter Analytics</title>
+    <link rel="stylesheet" href="{% static 'voter_analytics/style.css' %}">
+</head>
+<body>
+<header>
+    <div class="container">
+        <p class="eyebrow">CS412 · Assignment 7</p>
+        <h1>Newton Voter Analytics</h1>
+        <nav aria-label="Main navigation">
+            <a href="{% url 'voter_analytics:voters' %}{% if filter_query %}?{{ filter_query }}{% endif %}">Voter list</a>
+            <a href="{% url 'voter_analytics:graphs' %}{% if filter_query %}?{{ filter_query }}{% endif %}">Graphs</a>
+        </nav>
+    </div>
+</header>
+<main class="container">{% block content %}{% endblock %}</main>
+<footer class="container">Stanley Lin · CS412</footer>
+</body>
+</html>

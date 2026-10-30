@@ -1,0 +1,22 @@
+<!-- Name: Stanley Lin | BU Email: stanley0@bu.edu
+Description: Reusable GET form retaining all selected voter filters. -->
+<form method="get" class="panel">
+    <h2>Filter voters</h2>
+    <p>All filters are optional. Birth year limits include the selected years.
+       Checked elections require participation in every selected election.</p>
+    {{ filter_form.non_field_errors }}
+    <div class="filters">
+    {% for field in filter_form %}
+        <div class="field">
+            {{ field.errors }}
+            {% if field.field.widget.input_type == 'checkbox' %}
+                <label for="{{ field.id_for_label }}">{{ field }} {{ field.label }}</label>
+            {% else %}
+                {{ field.label_tag }} {{ field }}
+            {% endif %}
+        </div>
+    {% endfor %}
+    </div>
+    <button type="submit">Apply filters</button>
+    <a href="{{ request.path }}">Clear filters</a>
+</form>

@@ -1,3 +1,6 @@
+# Name: Stanley Lin
+# BU Email: stanley0@bu.edu
+# Description: Configure the project and register the voter analytics application.
 """
 Django settings for cs412 project.
 
@@ -43,6 +46,7 @@ INSTALLED_APPS = [
     'quotes',
     'restaurant',
     'mini_insta',
+    'voter_analytics',
 ]
 
 MIDDLEWARE = [

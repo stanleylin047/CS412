@@ -1,0 +1,29 @@
+<!-- Name: Stanley Lin | BU Email: stanley0@bu.edu
+Description: Display all voter fields and an encoded Google Maps address link. -->
+{% extends 'voter_analytics/base.html' %}
+{% block content %}
+<section class="panel">
+<h2>{{ voter.first_name }} {{ voter.last_name }}</h2>
+<dl>
+    <dt>Record primary key</dt><dd>{{ voter.pk }}</dd>
+    <dt>Voter ID number</dt><dd>{{ voter.voter_id }}</dd>
+    <dt>First name</dt><dd>{{ voter.first_name }}</dd>
+    <dt>Last name</dt><dd>{{ voter.last_name }}</dd>
+    <dt>Street number</dt><dd>{{ voter.street_number }}</dd>
+    <dt>Street name</dt><dd>{{ voter.street_name }}</dd>
+    <dt>Apartment number</dt><dd>{{ voter.apartment_number|default:'None' }}</dd>
+    <dt>ZIP code</dt><dd>{{ voter.zip_code }}</dd>
+    <dt>Date of birth</dt><dd>{{ voter.date_of_birth|date:'Y-m-d' }}</dd>
+    <dt>Date of registration</dt>
+    <dd>{% if voter.date_of_registration %}{{ voter.date_of_registration|date:'Y-m-d' }}{% else %}Invalid date in source: {{ voter.registration_date_original|default:'blank' }}{% endif %}</dd>
+    <dt>Party affiliation</dt><dd>{{ voter.party_affiliation|default:'Unspecified' }}</dd>
+    <dt>Precinct number</dt><dd>{{ voter.precinct_number }}</dd>
+    <dt>Voter score</dt><dd>{{ voter.voter_score }} / 5</dd>
+    {% for label, participated in voter.get_election_history %}
+    <dt>{{ label }}</dt><dd>{{ participated|yesno:'True,False' }}</dd>
+    {% endfor %}
+</dl>
+<p><a href="{{ voter.get_map_url }}" target="_blank" rel="noopener noreferrer">View address on Google Maps</a></p>
+<p><a href="{% url 'voter_analytics:voters' %}">Back to voter list</a></p>
+</section>
+{% endblock %}

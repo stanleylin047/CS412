@@ -1,0 +1,37 @@
+<!-- Name: Stanley Lin | BU Email: stanley0@bu.edu
+Description: Display matching voters and filter-preserving pagination. -->
+{% extends 'voter_analytics/base.html' %}
+{% block content %}
+{% include 'voter_analytics/filter_form.html' %}
+<h2>Voter records</h2>
+<p>{{ paginator.count }} matching record{{ paginator.count|pluralize }} · Up to 100 per page</p>
+<div class="table-scroll">
+<table>
+    <thead><tr><th>Name</th><th>Street address</th><th>Date of birth</th><th>Party</th><th>Voter score</th></tr></thead>
+    <tbody>
+    {% for voter in voters %}
+    <tr>
+        <td><a href="{{ voter.get_absolute_url }}">{{ voter.first_name }} {{ voter.last_name }}</a></td>
+        <td>{{ voter.get_address }}</td>
+        <td>{{ voter.date_of_birth|date:'Y-m-d' }}</td>
+        <td>{{ voter.party_affiliation|default:'Unspecified' }}</td>
+        <td>{{ voter.voter_score }}</td>
+    </tr>
+    {% empty %}<tr><td colspan="5">No voters match these filters.</td></tr>{% endfor %}
+    </tbody>
+</table>
+</div>
+{% if is_paginated %}
+<nav class="pagination" aria-label="Pagination">
+    {% if page_obj.has_previous %}
+    <a href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page=1">First</a>
+    <a href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+    <a href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ page_obj.next_page_number }}">Next</a>
+    <a href="?{% if filter_query %}{{ filter_query }}&amp;{% endif %}page={{ paginator.num_pages }}">Last</a>
+    {% endif %}
+</nav>
+{% endif %}
+{% endblock %}
