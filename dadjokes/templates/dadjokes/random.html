@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Terrible Dad Jokes</h1>
+
+    {% if joke %}
+        <p>Contributor: {{ joke.contributor}}</p>
+        <p>{{ joke.text }}</p>
+    {% endif %}
+
+    {% if picture %}
+        <img src="{{picture.image_url}}" width="300">
+    {% endif %}
+    
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Picture Details</h1>
+
+    <img src="{{ picture.image_url }}" width="400">
+
+    <p>Contributed by: {{ picture.contributor }}</p>
+    <p>Created at: {{picture.created_at }}</p>
+
+    <a href="{% url 'dadjokes:pictures' %}">
+        Back to All Picutures
+    </a>
+{% endblock %}

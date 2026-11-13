@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>All Jokes</h1>
+
+    {% for joke in jokes %}
+        <p>{{ joke.text }}</p>
+        <a href="{% url 'dadjokes:joke' joke.pk %}">
+            Read Full Joke
+        </a>
+    {% empty %}
+        <p>No jokes yet</p>
+    {% endfor %}
+{% endblock %}

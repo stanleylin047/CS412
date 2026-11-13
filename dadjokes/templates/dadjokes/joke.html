@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>Dad joke details</h1>
+
+    <p>Contributed by: {{joke.contributor}}</p>
+    <p>Created: {{ joke.created_at }}</p>
+    <p>{{ joke.text}}</p>
+
+    <a href="{% url 'dadjokes:jokes' %}">Back to All Jokes</a>
+{% endblock %}
