@@ -7,6 +7,7 @@ name = "pypi"
 django = "*"
 pillow = "*"
 plotly = "==7.1.0"
+djangorestframework = "*"
 
 [dev-packages]
 
