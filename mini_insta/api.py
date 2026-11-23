@@ -8,6 +8,7 @@ from rest_framework.authtoken.serializers import AuthTokenSerializer
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from rest_framework.reverse import reverse
 from rest_framework.views import APIView
 
 from .models import Photo, Post, Profile
@@ -60,6 +61,18 @@ class PostSerializer(serializers.ModelSerializer):
         if image_url or image_file:
             Photo.objects.create(post=post, image_url=image_url, image_file=image_file)
         return post
+
+
+class APIRoot(APIView):
+    authentication_classes = []
+    permission_classes = [AllowAny]
+
+    def get(self, request):
+        return Response({
+            'login': reverse('mini_insta:api_login', request=request),
+            'profiles': reverse('mini_insta:api_profiles', request=request),
+            'create_post': reverse('mini_insta:api_create_post', request=request),
+        })
 
 
 class LoginView(APIView):

@@ -12,6 +12,8 @@ from .views import (ProfileListView, ProfileDetailView, PostDetailView,
 app_name = "mini_insta"
 
 urlpatterns = [
+    path('api', api.APIRoot.as_view(), name='api_root'),
+    path('api/', api.APIRoot.as_view()),
     path('api/login/', api.LoginView.as_view(), name='api_login'),
     path('api/profiles/', api.ProfileList.as_view(), name='api_profiles'),
     path('api/profiles/<int:pk>/', api.ProfileDetail.as_view(), name='api_profile'),

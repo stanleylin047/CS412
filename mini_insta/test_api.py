@@ -41,6 +41,9 @@ class MiniInstaAPITests(APITestCase):
         self.client.credentials(HTTP_AUTHORIZATION='Token ' + response.data['token'])
 
     def test_login_and_authentication(self):
+        root = self.client.get(reverse('mini_insta:api_root'))
+        self.assertEqual(root.status_code, 200)
+        self.assertEqual(root.data['profiles'], 'http://testserver' + reverse('mini_insta:api_profiles'))
         self.assertEqual(self.login(password='wrong').status_code, 400)
         self.assertEqual(self.login(username='unlinked').status_code, 403)
         self.assertEqual(self.client.get(reverse('mini_insta:api_profiles')).status_code, 401)

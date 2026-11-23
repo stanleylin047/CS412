@@ -9,10 +9,36 @@ import * as SecureStore from 'expo-secure-store';
 
 import { request } from './api';
 
-const sessionKey = 'mini-insta-session';
-const tabs = ['Feed', 'Profile', 'New post'];
+type Session = { token: string; profileId: number };
+type Profile = {
+  username: string;
+  display_name: string;
+  profile_image_url: string;
+  bio_text: string;
+};
+type Post = {
+  id: number;
+  profile: Profile;
+  timestamp: string;
+  caption: string;
+  photos: { id: number; image_url: string }[];
+};
 
-function Button({ title, onPress, disabled, secondary }) {
+const sessionKey = 'mini-insta-session';
+const tabs = ['Feed', 'Profile', 'New post'] as const;
+type Tab = typeof tabs[number];
+
+function errorMessage(error: unknown) {
+  return error instanceof Error ? error.message : String(error);
+}
+
+function isUnauthorized(error: unknown) {
+  return error instanceof Error && 'status' in error && error.status === 401;
+}
+
+function Button({ title, onPress, disabled, secondary }: {
+  title: string; onPress: () => void; disabled?: boolean; secondary?: boolean;
+}) {
   return (
     <Pressable accessibilityRole="button" disabled={disabled} onPress={onPress}
       style={[styles.button, secondary && styles.secondary, disabled && styles.disabled]}>
@@ -21,17 +47,17 @@ function Button({ title, onPress, disabled, secondary }) {
   );
 }
 
-function ErrorText({ message }) {
+function ErrorText({ message }: { message: string }) {
   return message ? <Text accessibilityRole="alert" style={styles.error}>{message}</Text> : null;
 }
 
-function Avatar({ profile, large }) {
+function Avatar({ profile, large }: { profile: Profile; large?: boolean }) {
   return <Image source={{ uri: profile.profile_image_url }}
     accessibilityLabel={profile.display_name + ' profile photo'}
     style={[styles.avatar, large && styles.avatarLarge]} />;
 }
 
-function PostCard({ post }) {
+function PostCard({ post }: { post: Post }) {
   return (
     <View style={styles.card}>
       <View style={styles.author}>
@@ -51,7 +77,7 @@ function PostCard({ post }) {
   );
 }
 
-function Login({ onLogin }) {
+function Login({ onLogin }: { onLogin: (session: Session) => Promise<void> }) {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -65,7 +91,7 @@ function Login({ onLogin }) {
       const session = await request('/login/', { body: { username: username.trim(), password } });
       await onLogin({ token: session.token, profileId: session.profile.id });
     } catch (failure) {
-      setError(failure.message);
+      setError(errorMessage(failure));
     } finally {
       setBusy(false);
     }
@@ -88,9 +114,9 @@ function Login({ onLogin }) {
   );
 }
 
-function Timeline({ session, tab, onExpired }) {
-  const [posts, setPosts] = useState([]);
-  const [profile, setProfile] = useState(null);
+function Timeline({ session, tab, onExpired }: { session: Session; tab: Tab; onExpired: () => void }) {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [profile, setProfile] = useState<Profile | null>(null);
   const [busy, setBusy] = useState(true);
   const [error, setError] = useState('');
   const [revision, setRevision] = useState(0);
@@ -114,8 +140,8 @@ function Timeline({ session, tab, onExpired }) {
         setProfile(loadedProfile);
       } catch (failure) {
         if (controller.signal.aborted) return;
-        if (failure.status === 401) onExpired();
-        else setError(failure.message);
+        if (isUnauthorized(failure)) onExpired();
+        else setError(errorMessage(failure));
       } finally {
         if (!controller.signal.aborted) setBusy(false);
       }
@@ -148,10 +174,12 @@ function Timeline({ session, tab, onExpired }) {
   );
 }
 
-function Composer({ token, onPosted, onExpired }) {
+function Composer({ token, onPosted, onExpired }: {
+  token: string; onPosted: () => void; onExpired: () => void;
+}) {
   const [caption, setCaption] = useState('');
   const [imageUrl, setImageUrl] = useState('');
-  const [asset, setAsset] = useState(null);
+  const [asset, setAsset] = useState<ImagePicker.ImagePickerAsset | null>(null);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
@@ -164,7 +192,7 @@ function Composer({ token, onPosted, onExpired }) {
         setImageUrl('');
       }
     } catch (failure) {
-      setError(failure.message);
+      setError(errorMessage(failure));
     }
   }
 
@@ -173,23 +201,26 @@ function Composer({ token, onPosted, onExpired }) {
     setBusy(true);
     setError('');
     try {
-      let body = { caption: caption.trim() };
+      let body: FormData | { caption: string; image_url?: string };
       if (asset) {
         body = new FormData();
         body.append('caption', caption.trim());
-        body.append('image_file', {
+        const file = {
           uri: asset.uri,
           type: asset.mimeType || 'application/octet-stream',
           name: asset.fileName || asset.uri.split('/').pop() || 'photo.jpg',
-        });
-      } else if (imageUrl.trim()) {
-        body.image_url = imageUrl.trim();
+        };
+        // React Native adds support for URI-backed files to FormData.
+        body.append('image_file', file as unknown as Blob);
+      } else {
+        body = { caption: caption.trim() };
+        if (imageUrl.trim()) body.image_url = imageUrl.trim();
       }
       await request('/posts/', { token, body });
       onPosted();
     } catch (failure) {
-      if (failure.status === 401) onExpired();
-      else setError(failure.message);
+      if (isUnauthorized(failure)) onExpired();
+      else setError(errorMessage(failure));
     } finally {
       setBusy(false);
     }
@@ -219,20 +250,20 @@ function Composer({ token, onPosted, onExpired }) {
 }
 
 export default function App() {
-  const [session, setSession] = useState(undefined);
-  const [tab, setTab] = useState('Feed');
+  const [session, setSession] = useState<Session | null>();
+  const [tab, setTab] = useState<Tab>('Feed');
   const [error, setError] = useState('');
 
   useEffect(() => {
     SecureStore.getItemAsync(sessionKey).then(value => {
       setSession(value ? JSON.parse(value) : null);
     }).catch(failure => {
-      setError(failure.message);
+      setError(errorMessage(failure));
       setSession(null);
     });
   }, []);
 
-  async function signIn(nextSession) {
+  async function signIn(nextSession: Session) {
     await SecureStore.setItemAsync(sessionKey, JSON.stringify(nextSession));
     setError('');
     setTab('Feed');
@@ -244,7 +275,7 @@ export default function App() {
       await SecureStore.deleteItemAsync(sessionKey);
       setError('');
     } catch (failure) {
-      setError(failure.message);
+      setError(errorMessage(failure));
     }
     setSession(null);
   }, []);
