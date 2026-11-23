@@ -1,6 +1,7 @@
 # Name: Stanley Lin
 # BU Email: stanley0@bu.edu
 # Description: This file set the data and data type we need.
+from django.conf import settings
 from django.db import models
 from django.urls import reverse
 
@@ -8,6 +9,10 @@ from django.urls import reverse
 class Profile(models.Model):
     """Encapsulate the data of a user profile"""
 
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL,
+        null=True, blank=True, related_name='mini_insta_profile',
+    )
     username = models.CharField(max_length=20)
     display_name = models.CharField(max_length=20)
     profile_image_url = models.URLField()

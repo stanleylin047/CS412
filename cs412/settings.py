@@ -14,6 +14,7 @@ https://docs.djangoproject.com/en/6.1/ref/settings/
 """
 
 from pathlib import Path
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,7 +31,10 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['cs-webapps.bu.edu',
                  '127.0.0.1',
+                 'localhost',
+                 '10.0.2.2',
                  ]
+ALLOWED_HOSTS += os.environ.get('DJANGO_EXTRA_ALLOWED_HOSTS', '').split()
 
 
 
@@ -49,6 +53,7 @@ INSTALLED_APPS = [
     'voter_analytics',
     'dadjokes',
     'rest_framework',
+    'rest_framework.authtoken',
     "corsheaders",
 ]
 
@@ -140,7 +145,6 @@ MAILERS = {
     },
 }
 
-import os   
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 STATIC_URL = '/static/'
 

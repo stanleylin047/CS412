@@ -3,6 +3,7 @@
 # File: urls.py
 # Description: This file defines the URL patterns for the mini_insta application.
 from django.urls import path
+from . import api
 from .views import (ProfileListView, ProfileDetailView, PostDetailView, 
                     CreatePostView, UpdatePostView, UpdateProfileView, 
                     DeletePostView,ShowFollowersDetailView, ShowFollowingDetailView,
@@ -11,6 +12,12 @@ from .views import (ProfileListView, ProfileDetailView, PostDetailView,
 app_name = "mini_insta"
 
 urlpatterns = [
+    path('api/login/', api.LoginView.as_view(), name='api_login'),
+    path('api/profiles/', api.ProfileList.as_view(), name='api_profiles'),
+    path('api/profiles/<int:pk>/', api.ProfileDetail.as_view(), name='api_profile'),
+    path('api/profiles/<int:pk>/posts/', api.ProfilePosts.as_view(), name='api_profile_posts'),
+    path('api/profiles/<int:pk>/feed/', api.ProfileFeed.as_view(), name='api_feed'),
+    path('api/posts/', api.CreatePost.as_view(), name='api_create_post'),
     path('', ProfileListView.as_view(), name="show_all_profiles"),
     path('profile/<int:pk>', ProfileDetailView.as_view(), name="show_profile"),
     path('post/<int:pk>', PostDetailView.as_view(), name="show_post"),
